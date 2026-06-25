@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BESC — Built Environment Sector Construction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --navy:#0A192F;--navy-deep:#060F1F;--navy-mid:#13294B;--yellow:#F2C94C;--yellow-deep:#D4A82F;
+    --concrete:#8A8478;--concrete-light:#EDE9E1;--white:#FFFFFF;--charcoal:#1E293B;--grey-txt:#5A6B7A;
+    --font-display:'Fraunces',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;--font-mono:'IBM Plex Mono','Courier New',monospace;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);background:var(--navy);color:var(--white);line-height:1.6;overflow-x:hidden;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 2.5rem;height:74px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,15,31,0.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(242,201,76,0.12);}
+  .nav-logo{display:flex;flex-direction:column;line-height:1;}
+  .nav-logo-primary{font-family:var(--font-display);font-size:1.45rem;font-weight:700;color:var(--white);}
+  .nav-logo-primary span{color:var(--yellow);}
+  .nav-logo-sub{font-family:var(--font-mono);font-size:.52rem;color:rgba(255,255,255,.45);letter-spacing:.14em;text-transform:uppercase;margin-top:3px;}
+  .nav-links{display:flex;gap:2.1rem;list-style:none;align-items:center;}
+  .nav-links a{font-size:.78rem;font-weight:500;color:rgba(255,255,255,.75);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--yellow);}
+  .nav-cta{background:var(--yellow) !important;color:var(--navy) !important;padding:.55rem 1.3rem !important;border-radius:2px;font-weight:600 !important;}
+  .nav-cta:hover{background:var(--yellow-deep) !important;}
+  .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
+  .nav-hamburger span{display:block;width:22px;height:2px;background:var(--white);}
+  .mobile-nav{display:none;position:fixed;top:74px;left:0;right:0;background:var(--navy-deep);padding:1.5rem 2rem;flex-direction:column;gap:1.1rem;z-index:199;border-bottom:1px solid rgba(242,201,76,.15);}
+  .mobile-nav.open{display:flex;}
+  .mobile-nav a{font-size:.9rem;font-weight:500;color:var(--white);text-decoration:none;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.07);}
+
+  .hero-carousel{position:relative;height:100vh;width:100%;overflow:hidden;background:var(--navy-deep);}
+  .dot-grid{position:absolute;inset:0;background-image:radial-gradient(circle, rgba(242,201,76,0.12) 1px, transparent 1px);background-size:26px 26px;mask-image:radial-gradient(ellipse 70% 70% at 75% 50%, black 30%, transparent 100%);-webkit-mask-image:radial-gradient(ellipse 70% 70% at 75% 50%, black 30%, transparent 100%);pointer-events:none;}
+
+  .carousel-slide{position:absolute;inset:0;display:flex;align-items:center;padding:7rem 2.5rem 6rem;opacity:0;visibility:hidden;transition:opacity .6s ease;}
+  .carousel-slide.active{opacity:1;visibility:visible;z-index:2;}
+  .slide-inner{max-width:1280px;margin:0 auto;width:100%;}
+  .slide-num-badge{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-mono);font-size:.7rem;color:var(--yellow);letter-spacing:.16em;margin-bottom:1.4rem;}
+  .slide-num-badge::before{content:'';width:24px;height:1px;background:var(--yellow);}
+  .slide-headline{font-family:var(--font-display);font-weight:700;font-size:clamp(2.2rem,4.6vw,4rem);line-height:1.1;color:var(--white);margin-bottom:1.2rem;max-width:780px;}
+  .slide-headline em{font-style:italic;font-weight:500;color:var(--yellow);}
+  .slide-body{font-size:1.05rem;font-weight:300;color:rgba(255,255,255,.75);line-height:1.65;max-width:560px;}
+  .slide-cta{display:inline-block;margin-top:1.8rem;background:var(--yellow);color:var(--navy);padding:.8rem 1.7rem;font-size:.85rem;font-weight:600;text-decoration:none;border-radius:2px;}
+  .slide-cta:hover{background:var(--yellow-deep);}
+
+  .carousel-slide[data-slide="2"]{background:linear-gradient(135deg, var(--navy-deep) 0%, #0E2240 100%);}
+  .carousel-slide[data-slide="3"]{background:linear-gradient(135deg, #2A2620 0%, var(--navy-deep) 100%);}
+  .carousel-slide[data-slide="4"]{background:linear-gradient(135deg, var(--navy-deep) 0%, var(--navy-mid) 100%);}
+  .carousel-slide[data-slide="5"]{background:linear-gradient(135deg, #0E2240 0%, var(--navy-deep) 100%);}
+  .carousel-slide[data-slide="6"]{background:linear-gradient(135deg, var(--navy-deep) 0%, #1A1610 100%);}
+  .carousel-slide[data-slide="7"]{background:linear-gradient(135deg, #2A2620 0%, var(--navy-mid) 100%);}
+  .carousel-slide[data-slide="8"]{background:linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-deep) 100%);}
+
+  .slide-stats{display:flex;gap:2.2rem;margin-top:2rem;}
+  .slide-stat-val{font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--yellow);}
+  .slide-stat-label{font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.5);letter-spacing:.05em;text-transform:uppercase;margin-top:.25rem;}
+
+  .carousel-dots{position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);display:flex;gap:.6rem;z-index:10;}
+  .carousel-dot{width:28px;height:3px;background:rgba(255,255,255,.25);cursor:pointer;border:none;padding:0;}
+  .carousel-dot.active{background:var(--yellow);}
+  .carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:var(--white);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
+  .carousel-arrow:hover{background:rgba(242,201,76,.25);}
+  .carousel-arrow.prev{left:1.8rem;}
+  .carousel-arrow.next{right:1.8rem;}
+  .carousel-counter{position:absolute;top:6.5rem;right:2.5rem;font-family:var(--font-mono);font-size:.75rem;color:rgba(255,255,255,.45);z-index:10;}
+  .carousel-counter span{color:var(--yellow);font-weight:600;}
+  .scroll-cue{position:absolute;bottom:2rem;right:2.5rem;font-family:var(--font-mono);font-size:.6rem;color:rgba(255,255,255,.4);text-transform:uppercase;z-index:10;display:flex;align-items:center;gap:.5rem;}
+  .scroll-cue::after{content:'↓';animation:scrollpulse 2s ease-in-out infinite;}
+  @keyframes scrollpulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+  section.page-section{padding:6.5rem 2.5rem;}
+  .section-inner{max-width:1280px;margin:0 auto;}
+  .section-eyebrow{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;font-weight:500;}
+  .section-eyebrow::before{content:'';width:20px;height:1px;}
+  .section-title{font-family:var(--font-display);font-weight:700;font-size:clamp(1.9rem,3.2vw,2.6rem);line-height:1.14;margin-bottom:1.1rem;}
+  .section-lead{font-size:1.0rem;font-weight:300;line-height:1.7;max-width:620px;}
+
+  #problem{background:var(--white);color:var(--charcoal);}
+  #problem .section-eyebrow{color:var(--yellow-deep);}
+  #problem .section-eyebrow::before{background:var(--yellow-deep);}
+  #problem .section-title{color:var(--navy);}
+  #problem .section-lead{color:var(--grey-txt);}
+  .problem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-top:2.8rem;}
+  .problem-item{background:var(--concrete-light);border-left:3px solid var(--yellow-deep);padding:1.3rem 1.4rem;font-size:.86rem;color:var(--charcoal);line-height:1.5;}
+
+  #mandate{background:var(--navy-mid);}
+  #mandate .section-eyebrow{color:var(--yellow);}
+  #mandate .section-eyebrow::before{background:var(--yellow);}
+  .mandate-box{background:rgba(255,255,255,.04);border:1px solid rgba(242,201,76,.2);padding:2.2rem;max-width:700px;margin-top:1.8rem;}
+  .mandate-box p{font-size:1.02rem;color:rgba(255,255,255,.85);line-height:1.6;}
+  .mandate-note{margin-top:1.3rem;font-family:var(--font-mono);font-size:.72rem;color:var(--yellow);font-style:italic;}
+
+  #divisions{background:var(--navy-deep);}
+  #divisions .section-eyebrow{color:var(--yellow);}
+  #divisions .section-eyebrow::before{background:var(--yellow);}
+  .div-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-top:2.4rem;}
+  .div-card{background:var(--navy-mid);border-top:3px solid var(--yellow);padding:1.1rem;transition:transform .25s,background .25s;}
+  .div-card:hover{transform:translateY(-4px);background:#1A3258;}
+  .div-num{font-family:var(--font-mono);font-size:.62rem;color:var(--yellow);margin-bottom:.5rem;}
+  .div-title{font-size:.85rem;font-weight:600;color:var(--white);margin-bottom:.4rem;}
+  .div-desc{font-size:.7rem;color:rgba(255,255,255,.5);line-height:1.35;}
+
+  #technology{background:var(--navy-mid);}
+  #technology .section-eyebrow{color:var(--yellow);}
+  #technology .section-eyebrow::before{background:var(--yellow);}
+  .tech-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;margin-top:2.2rem;}
+  .tech-card{background:rgba(255,255,255,.04);border:1px dashed rgba(242,201,76,.35);padding:1.6rem;}
+  .tech-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--yellow);text-transform:uppercase;margin-bottom:.8rem;}
+  .tech-title{font-size:1.0rem;font-weight:600;color:var(--white);margin-bottom:.6rem;}
+  .tech-desc{font-size:.82rem;color:rgba(255,255,255,.62);line-height:1.5;}
+
+  #residential{background:linear-gradient(160deg, #2A2620 0%, var(--navy-deep) 65%);}
+  #residential .section-eyebrow{color:var(--yellow);}
+  #residential .section-eyebrow::before{background:var(--yellow);}
+  .res-bridge{background:rgba(242,201,76,.08);border:1px solid rgba(242,201,76,.3);padding:1.4rem 1.7rem;margin-top:1.8rem;max-width:800px;display:flex;align-items:center;gap:1.2rem;}
+  .res-bridge-icon{font-family:var(--font-mono);font-size:1.3rem;color:var(--yellow);flex-shrink:0;}
+  .res-bridge p{font-size:.88rem;color:rgba(255,255,255,.85);line-height:1.5;}
+  .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;}
+  .res-card{background:rgba(255,255,255,.05);border-left:3px solid var(--concrete);padding:1.3rem;}
+  .res-card.bridge-card{border-left-color:var(--yellow);background:rgba(242,201,76,.06);}
+  .res-num{font-family:var(--font-mono);font-size:.62rem;color:var(--concrete);margin-bottom:.6rem;}
+  .res-card.bridge-card .res-num{color:var(--yellow);}
+  .res-title{font-size:.92rem;font-weight:600;color:var(--white);margin-bottom:.45rem;}
+  .res-desc{font-size:.74rem;color:rgba(255,255,255,.55);line-height:1.4;}
+
+  #regulatory{background:var(--white);color:var(--charcoal);}
+  #regulatory .section-eyebrow{color:var(--yellow-deep);}
+  #regulatory .section-eyebrow::before{background:var(--yellow-deep);}
+  #regulatory .section-title{color:var(--navy);}
+  #regulatory .section-lead{color:var(--grey-txt);}
+  .cidb-track{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-top:2.2rem;}
+  .cidb-step{background:var(--concrete-light);padding:1.2rem;border:1px solid #DDD5C2;position:relative;}
+  .cidb-step.current{background:var(--navy);border-color:var(--navy);}
+  .cidb-step.current .cidb-grade{color:var(--yellow);}
+  .cidb-step.current .cidb-desc{color:rgba(255,255,255,.75);}
+  .cidb-grade{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;}
+  .cidb-desc{font-size:.74rem;color:var(--grey-txt);line-height:1.4;}
+  .here-badge{position:absolute;top:-10px;right:10px;background:var(--yellow);color:var(--navy);font-family:var(--font-mono);font-size:.55rem;font-weight:700;padding:.2rem .5rem;border-radius:8px;}
+  .reg-note{margin-top:1.6rem;background:#FFF4D6;border:1px solid var(--yellow-deep);padding:1.1rem 1.4rem;font-size:.82rem;color:var(--charcoal);line-height:1.5;max-width:950px;}
+
+  #group-cta{background:var(--navy-deep);}
+  #group-cta .section-eyebrow{color:var(--yellow);}
+  #group-cta .section-eyebrow::before{background:var(--yellow);}
+  .group-row{display:flex;gap:.8rem;margin-top:1.6rem;flex-wrap:wrap;}
+  .group-chip{background:var(--navy-mid);border:1px solid rgba(255,255,255,.12);padding:.7rem 1.3rem;font-size:.85rem;font-weight:600;color:rgba(255,255,255,.7);}
+  .group-chip.this{border-color:var(--yellow);color:var(--yellow);background:rgba(242,201,76,.08);}
+  .cta-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:3rem;margin-top:2.5rem;align-items:start;}
+  .contact-form{background:rgba(255,255,255,.05);border:1px solid rgba(242,201,76,.2);padding:1.8rem;}
+  .form-field{margin-bottom:.9rem;}
+  .form-field label{display:block;font-family:var(--font-mono);font-size:.62rem;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.4rem;}
+  .form-field input,.form-field select{width:100%;padding:.65rem .85rem;border:1px solid rgba(255,255,255,.15);border-radius:2px;font-family:var(--font-body);font-size:.85rem;color:var(--white);background:rgba(255,255,255,.04);}
+  .form-field input::placeholder{color:rgba(255,255,255,.35);}
+  .form-submit{width:100%;background:var(--yellow);color:var(--navy);border:none;padding:.8rem;font-size:.85rem;font-weight:700;border-radius:2px;cursor:pointer;}
+  .form-submit:hover{background:var(--yellow-deep);}
+
+  .ticker-wrap{background:var(--navy-deep);padding:.85rem 0;overflow:hidden;border-top:1px solid rgba(242,201,76,.2);border-bottom:1px solid rgba(242,201,76,.2);}
+  .ticker-track{display:flex;gap:3rem;animation:ticker 30s linear infinite;white-space:nowrap;}
+  @keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .ticker-item{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:.9rem;}
+  .ticker-dot{width:4px;height:4px;background:var(--yellow);border-radius:50%;}
+
+  footer{background:#040A16;padding:2.2rem 2.5rem;}
+  .footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+  .footer-brand{font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--white);}
+  .footer-brand span{color:var(--yellow);}
+  .footer-copy{font-family:var(--font-mono);font-size:.6rem;color:rgba(255,255,255,.3);text-transform:uppercase;}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+
+  @media(max-width:1024px){
+    .problem-grid,.div-grid,.tech-row,.res-grid,.cidb-track{grid-template-columns:repeat(2,1fr);}
+    .cta-grid{grid-template-columns:1fr;}
+    .carousel-counter{display:none;}
+  }
+  @media(max-width:768px){
+    .nav-links{display:none;}
+    .nav-hamburger{display:flex;}
+    .carousel-slide{padding:6rem 1.5rem 5rem;}
+    section.page-section{padding:4.5rem 1.5rem;}
+    .problem-grid,.div-grid,.tech-row,.res-grid,.cidb-track{grid-template-columns:1fr;}
+    .slide-stats{flex-wrap:wrap;gap:1.2rem;}
+    .carousel-arrow{width:36px;height:36px;}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <span class="nav-logo-primary">BES<span>C</span></span>
+    <span class="nav-logo-sub">Built Environment Sector Construction</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#divisions">Capability</a></li>
+    <li><a href="#residential">Residential</a></li>
+    <li><a href="#regulatory">Growth Path</a></li>
+    <li><a href="#group-cta" class="nav-cta">Start a Project</a></li>
+  </ul>
+  <button class="nav-hamburger" onclick="document.getElementById('mnav').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-nav" id="mnav">
+  <a href="#divisions">Capability</a>
+  <a href="#technology">Technology</a>
+  <a href="#residential">Residential</a>
+  <a href="#regulatory">Growth Path</a>
+  <a href="#group-cta">Start a Project</a>
+</div>
+
+<div class="hero-carousel" id="carousel">
+  <div class="dot-grid"></div>
+  <div class="carousel-counter"><span id="counter-current">01</span> / 08</div>
+
+  <div class="carousel-slide active" data-slide="1">
+    <div class="slide-inner">
+      <span class="slide-num-badge">CAPABILITY &amp; ROADMAP</span>
+      <h1 class="slide-headline">Infrastructure built<br/>on <em>accountability</em></h1>
+      <p class="slide-body">A multi-disciplinary construction and engineering capability across commercial, industrial, and residential projects — backed by structured project records and an honest growth path.</p>
+      <div class="slide-stats">
+        <div><div class="slide-stat-val">8</div><div class="slide-stat-label">Technical Divisions</div></div>
+        <div><div class="slide-stat-val">6</div><div class="slide-stat-label">Residential Specialisations</div></div>
+        <div><div class="slide-stat-val">3</div><div class="slide-stat-label">Sectors Served</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="2">
+    <div class="slide-inner">
+      <span class="slide-num-badge">OPERATIONAL ARCHITECTURE</span>
+      <h1 class="slide-headline">Eight specialisations,<br/>one <em>accountable</em> team</h1>
+      <p class="slide-body">From civil and structural foundations through to smart building integration — every technical discipline a serious construction operation needs, under one roof.</p>
+      <a href="#divisions" class="slide-cta">See All 8 Divisions</a>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="3">
+    <div class="slide-inner">
+      <span class="slide-num-badge">THE RESIDENTIAL PORTFOLIO</span>
+      <h1 class="slide-headline">From compliance to<br/><em>completed home</em></h1>
+      <p class="slide-body">A client buys a non-compliant property. REBES resolves the compliance issue. BESC delivers the renovation or new build that follows — one group, one continuous relationship.</p>
+      <a href="#residential" class="slide-cta">Explore the Residential Portfolio</a>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="4">
+    <div class="slide-inner">
+      <span class="slide-num-badge">THE BESC MANDATE</span>
+      <h1 class="slide-headline">Verification, built in<br/>from <em>day one</em></h1>
+      <p class="slide-body">We're building a construction operation where project records, safety compliance, and progress reporting are structured from the start — not reconstructed under pressure.</p>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="5">
+    <div class="slide-inner">
+      <span class="slide-num-badge">TECHNOLOGY ROADMAP</span>
+      <h1 class="slide-headline">Building toward verifiable,<br/><em>data-backed</em> construction</h1>
+      <p class="slide-body">Drone-based reality capture, structured audit trails, and smart sensing — our deliberate, phased investment roadmap as the business scales.</p>
+      <a href="#technology" class="slide-cta">See the Roadmap</a>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="6">
+    <div class="slide-inner">
+      <span class="slide-num-badge">REGULATORY GROWTH PATH</span>
+      <h1 class="slide-headline">Building credibility<br/>the <em>right</em> way</h1>
+      <p class="slide-body">CIDB contractor grading is earned through demonstrated track record — not claimed upfront. We're honest about where we are, and deliberate about where we're going.</p>
+      <a href="#regulatory" class="slide-cta">See Our Growth Path</a>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="7">
+    <div class="slide-inner">
+      <span class="slide-num-badge">NEW CUSTOM BUILDS</span>
+      <h1 class="slide-headline">Every tier, from<br/><em>standard to luxury</em></h1>
+      <p class="slide-body">Ground-up single dwellings across Budget, Standard, High-Value, and Luxury tiers — scaling alongside our CIDB grading roadmap, never overreaching it.</p>
+    </div>
+  </div>
+
+  <div class="carousel-slide" data-slide="8">
+    <div class="slide-inner">
+      <span class="slide-num-badge">A BESBPO GROUP BRAND</span>
+      <h1 class="slide-headline">Part of a coordinated,<br/><em>multi-disciplinary</em> group</h1>
+      <p class="slide-body">Shared workforce, shared standards, shared accountability — BESC contracts under BESBPO Group alongside BESBPO, REBES, and REAAS.</p>
+      <a href="#group-cta" class="slide-cta">Start a Project</a>
+    </div>
+  </div>
+
+  <button class="carousel-arrow prev" id="prevBtn" aria-label="Previous slide">&#8592;</button>
+  <button class="carousel-arrow next" id="nextBtn" aria-label="Next slide">&#8594;</button>
+  <div class="carousel-dots" id="dots"></div>
+  <div class="scroll-cue">Scroll for more</div>
+</div>
+
+<section class="page-section" id="problem">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">THE PROBLEM</p>
+    <h2 class="section-title">Construction has a trust<br/>and consistency problem</h2>
+    <p class="section-lead">Across the industry, the same structural vulnerabilities repeat project after project.</p>
+    <div class="problem-grid">
+      <div class="problem-item">Opaque supply chains and inconsistent material quality control</div>
+      <div class="problem-item">Unpredictable delays and difficult-to-verify milestone claims</div>
+      <div class="problem-item">Material shrinkage, theft, and avoidable site resource waste</div>
+      <div class="problem-item">Inconsistent regulatory compliance and site safety discipline</div>
+    </div>
+  </div>
+</section>
+
+<section class="page-section" id="mandate">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">THE BESC MANDATE</p>
+    <h2 class="section-title">Verification, built in<br/>from day one</h2>
+    <div class="mandate-box">
+      <p>We're building a construction operation where project records, safety compliance, and progress reporting are structured from the start — not reconstructed under pressure when something goes wrong.</p>
+      <p class="mandate-note">We are building toward this with deliberate, phased investment in technology and process.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page-section" id="divisions">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">OPERATIONAL ARCHITECTURE</p>
+    <h2 class="section-title">Eight specialisations,<br/>one accountable team</h2>
+    <div class="div-grid">
+      <div class="div-card"><div class="div-num">01</div><div class="div-title">Civil &amp; Core</div><div class="div-desc">Foundations, piling, structural steel, facades</div></div>
+      <div class="div-card"><div class="div-num">02</div><div class="div-title">Roofing &amp; Trusses</div><div class="div-desc">Industrial sheeting, trusses, waterproofing</div></div>
+      <div class="div-card"><div class="div-num">03</div><div class="div-title">Interior Fit-Outs</div><div class="div-desc">Ceilings, bulkheads, fire partitioning, epoxy</div></div>
+      <div class="div-card"><div class="div-num">04</div><div class="div-title">Paving &amp; Drainage</div><div class="div-desc">Hardstands, municipal civils, stormwater</div></div>
+      <div class="div-card"><div class="div-num">05</div><div class="div-title">Electrical &amp; Solar</div><div class="div-desc">3-phase reticulation, solar, battery storage</div></div>
+      <div class="div-card"><div class="div-num">06</div><div class="div-title">Petroleum Systems</div><div class="div-desc">Tank placement, fuel piping, containment</div></div>
+      <div class="div-card"><div class="div-num">07</div><div class="div-title">HVAC &amp; Utilities</div><div class="div-desc">VRF plant, commercial plumbing, reservoirs</div></div>
+      <div class="div-card"><div class="div-num">08</div><div class="div-title">Smart Integration</div><div class="div-desc">BMS, ELV networks, security integration</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page-section" id="technology">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">TECHNOLOGY ROADMAP</p>
+    <h2 class="section-title">Building toward verifiable,<br/>data-backed construction</h2>
+    <p class="section-lead">Our direction, not a Day 1 claim — phased investment as the business scales.</p>
+    <div class="tech-row">
+      <div class="tech-card">
+        <div class="tech-tag">Reality Capture</div>
+        <div class="tech-title">Drone &amp; Computer Vision</div>
+        <div class="tech-desc">Site surveys paired with computer vision to compare physical progress against design models.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-tag">Verifiable Records</div>
+        <div class="tech-title">Structured Audit Trails</div>
+        <div class="tech-desc">Auditable milestone, safety, and compliance records — evaluating blockchain ledgers as we mature.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-tag">Smart Sensing</div>
+        <div class="tech-title">Structural &amp; Environmental</div>
+        <div class="tech-desc">Concrete maturity monitoring and environmental fail-safes, rolled out on suitable projects.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-section" id="residential">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">THE RESIDENTIAL PORTFOLIO</p>
+    <h2 class="section-title">From compliance to<br/>completed home</h2>
+    <p class="section-lead">The same technical depth behind our commercial and industrial work, scaled for residential clients — anchored by a connection no other residential builder has.</p>
+
+    <div class="res-bridge">
+      <span class="res-bridge-icon">&#8594;</span>
+      <p><strong>The REBES Bridge:</strong> a client buys a non-compliant property, REBES resolves the compliance issue, and BESC is ready to deliver the renovation or new build that follows — one group, one continuous relationship.</p>
+    </div>
+
+    <div class="res-grid">
+      <div class="res-card bridge-card">
+        <div class="res-num">01</div>
+        <div class="res-title">Compliance-to-Build Renovations</div>
+        <div class="res-desc">Direct follow-on from a REBES or REAAS resolved compliance matter — corrections, upgrades, and legalised structures, built properly.</div>
+      </div>
+      <div class="res-card">
+        <div class="res-num">02</div>
+        <div class="res-title">Full Renovations &amp; Additions</div>
+        <div class="res-desc">Kitchens, bathrooms, room additions, second-storey additions, open-plan conversions.</div>
+      </div>
+      <div class="res-card">
+        <div class="res-num">03</div>
+        <div class="res-title">New Custom Builds</div>
+        <div class="res-desc">Ground-up single dwellings across Budget, Standard, High-Value, and Luxury tiers, scaling with our grading roadmap.</div>
+      </div>
+      <div class="res-card">
+        <div class="res-num">04</div>
+        <div class="res-title">Granny Flats &amp; Secondary Dwellings</div>
+        <div class="res-desc">One of South Africa's most common compliance-driven build triggers — a natural, recurring line of work.</div>
+      </div>
+      <div class="res-card">
+        <div class="res-num">05</div>
+        <div class="res-title">Lifestyle &amp; Estate Homes</div>
+        <div class="res-desc">Estate homes, cluster developments, and smallholdings, aligned to REBES's High-Value and Luxury property tiers.</div>
+      </div>
+      <div class="res-card">
+        <div class="res-num">06</div>
+        <div class="res-title">Sustainable &amp; Off-Grid Residential</div>
+        <div class="res-desc">Solar integration, water storage, and energy-efficient builds — drawing on our Electrical &amp; Solar and HVAC divisions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-section" id="regulatory">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">REGULATORY GROWTH PATH</p>
+    <h2 class="section-title">Building credibility the<br/>right way, grade by grade</h2>
+    <p class="section-lead">CIDB contractor grading is earned through demonstrated project track record and financial capacity — not claimed upfront. BESC is built to grow deliberately through this system.</p>
+    <div class="cidb-track">
+      <div class="cidb-step current">
+        <span class="here-badge">WE ARE HERE</span>
+        <div class="cidb-grade">Grade 1</div>
+        <div class="cidb-desc">Entry registration. Projects up to R500,000. No track record required.</div>
+      </div>
+      <div class="cidb-step">
+        <div class="cidb-grade">Grade 2&ndash;3</div>
+        <div class="cidb-desc">Projects up to R4,000,000. Requires our first completed, CIDB-registered projects.</div>
+      </div>
+      <div class="cidb-step">
+        <div class="cidb-grade">Grade 4&ndash;6</div>
+        <div class="cidb-desc">Mid-tier projects, built on multi-year track record and financial capacity.</div>
+      </div>
+      <div class="cidb-step">
+        <div class="cidb-grade">Grade 7&ndash;9</div>
+        <div class="cidb-desc">Large-scale and unlimited-value projects — the scale we are building toward.</div>
+      </div>
+    </div>
+    <div class="reg-note">This growth path applies equally to NHBRC residential registration and specialist professional sign-off (e.g. healthcare, large-scale commercial). BESC engages appropriately registered specialist professionals for any project requiring scope beyond our current registration.</div>
+  </div>
+</section>
+
+<section class="page-section" id="group-cta">
+  <div class="section-inner reveal">
+    <p class="section-eyebrow">A BESBPO GROUP BRAND</p>
+    <h2 class="section-title">Let's build something<br/>accountable, together</h2>
+    <div class="group-row">
+      <div class="group-chip">BESBPO</div>
+      <div class="group-chip">REBES</div>
+      <div class="group-chip">REAAS</div>
+      <div class="group-chip this">BESC</div>
+    </div>
+    <div class="cta-grid">
+      <div>
+        <p class="section-lead" style="margin-top:1.5rem;">From first projects through to large-scale infrastructure — we're building the systems, registrations, and track record to get there honestly. Tell us about your project.</p>
+        <p style="margin-top:1.8rem; font-family:var(--font-mono); font-size:.85rem; color:var(--yellow);">Thabo Fortune Ndaba — Founder &amp; CEO</p>
+        <p style="font-size:.85rem; color:rgba(255,255,255,.6); margin-top:.3rem;">Tel: 069 456 0531 &nbsp;|&nbsp; partners@besbpo.co.za</p>
+      </div>
+      <form class="contact-form" onsubmit="event.preventDefault();this.querySelector('.form-submit').textContent='Request Sent ✓';">
+        <div class="form-field"><label>Your Name</label><input type="text" placeholder="Full name" /></div>
+        <div class="form-field"><label>Project Type</label>
+          <select><option value="" disabled selected>Select a project type</option><option>Commercial / Industrial</option><option>Residential — Compliance-to-Build</option><option>Residential — New Build / Renovation</option><option>Other</option></select>
+        </div>
+        <div class="form-field"><label>Email</label><input type="email" placeholder="you@email.co.za" /></div>
+        <button type="submit" class="form-submit">Start a Conversation</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="ticker-dot"></span>Civil &amp; Structural</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Roofing &amp; Enclosures</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Interior Fit-Outs</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Paving &amp; Civils</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Electrical &amp; Solar</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Petroleum Systems</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>HVAC &amp; Utilities</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Smart Integration</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Residential Renovations</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>New Custom Builds</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Civil &amp; Structural</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Roofing &amp; Enclosures</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Interior Fit-Outs</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Paving &amp; Civils</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Electrical &amp; Solar</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Petroleum Systems</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>HVAC &amp; Utilities</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Smart Integration</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Residential Renovations</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>New Custom Builds</span>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">BES<span>C</span></div>
+    <p class="footer-copy">© 2026 BESC · A BESBPO Group Brand · Enterprise No: 2026/490480/07</p>
+  </div>
+</footer>
+
+<script>
+  const slides = document.querySelectorAll('.carousel-slide');
+  const dotsContainer = document.getElementById('dots');
+  const counter = document.getElementById('counter-current');
+  let current = 0;
+  let autoAdvanceTimer;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsContainer.appendChild(dot);
+  });
+  const dotEls = document.querySelectorAll('.carousel-dot');
+
+  function goToSlide(index) {
+    slides[current].classList.remove('active');
+    dotEls[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dotEls[current].classList.add('active');
+    counter.textContent = String(current + 1).padStart(2, '0');
+    resetAutoAdvance();
+  }
+
+  function resetAutoAdvance() {
+    clearInterval(autoAdvanceTimer);
+    autoAdvanceTimer = setInterval(() => goToSlide(current + 1), 6500);
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', () => goToSlide(current + 1));
+  document.getElementById('prevBtn').addEventListener('click', () => goToSlide(current - 1));
+
+  resetAutoAdvance();
+
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => obs.observe(el));
+
+  document.querySelectorAll('.mobile-nav a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('mnav').classList.remove('open'));
+  });
+</script>
+</body>
+</html>
